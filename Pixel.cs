@@ -50,29 +50,44 @@ namespace VideoLooper
         }
         public static Pixel operator +(Pixel x, Pixel y)
         {
-            int r = x.r + y.r;
-            int g = x.g + y.g;
-            int b = x.b + y.b;
-            int a = x.a + y.a;
-            if (r > 255) r = 255;
-            if (g > 255) g = 255;
-            if (b > 255) b = 255;
-            if (a > 255) a = 255;
-            return new Pixel(r, g, b);
+            return new Pixel(
+                ClampValue(x.r + y.r),
+                ClampValue(x.g + y.g),
+                ClampValue(x.b + y.b));
         }
         public static Pixel operator -(Pixel x, Pixel y)
         {
-            int r = x.r - y.r;
-            int g = x.g - y.g;
-            int b = x.b - y.b;
-            int a = x.a - y.a;
-            if (r < 0) r = 0;
-            if (g < 0) g = 0;
-            if (b < 0) b = 0;
-            if (a < 0) a = 0;
-            return new Pixel(r, g, b);
+            return new Pixel(
+                ClampValue(x.r - y.r),
+                ClampValue(x.g - y.g),
+                ClampValue(x.b - y.b));
         }
-
+        public static Pixel operator *(Pixel x, double y) 
+        {
+            return new Pixel(
+                ClampValue((int)(x.r * y)),
+                ClampValue((int)(x.g * y)),
+                ClampValue((int)(x.b * y)),
+                x.a);
+        }
+        public static Pixel operator *(Pixel x, Pixel y)
+        {
+            return new Pixel(
+                ClampValue((int)(x.r * y.r)),
+                ClampValue((int)(x.g * y.r)),
+                ClampValue((int)(x.b * y.r)),
+                x.a);
+        }
+        public static byte ClampValue(int value, int min = 0, int max = 255)
+        {
+            if(value < min) value = 0;
+            else if (value > max) value = 255;
+            return (byte)value;
+        }
+        public int ValueSum()
+        {
+            return r + g + b;
+        }
         public static void Add(int[] arr, Pixel pixel)
         {
             arr[0] += pixel.r;

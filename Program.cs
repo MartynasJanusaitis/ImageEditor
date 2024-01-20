@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -11,9 +12,6 @@ namespace VideoLooper
     {
         static void Main(string[] args)
         {
-            Image image = new Image("Input.png");
-            image = ImageProcessor.BoxBlur(image, 1);
-            image.SaveImage("Output.png");
 
         }
     }

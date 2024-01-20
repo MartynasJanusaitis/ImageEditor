@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace VideoLooper
 {
@@ -50,14 +51,11 @@ namespace VideoLooper
                 }
             }
         }
-        public Image(string filename) : this(new Bitmap(filename))
-        {
-
-        }
+        public Image(string filename) : this(new Bitmap(filename)) { }
         public Pixel GetPixel(int x, int y)
         {
-            //if (x >= Width || y >= Height) return null;
-            //if (x < 0 || y < 0) return null;
+            if(x < 0 || y < 0) return null;
+            if(x >= Width || y >= Height) return null;
             return pixels[x, y];
         }
         public Pixel[] GetCol(int x)
@@ -110,6 +108,42 @@ namespace VideoLooper
 
             bitmap.UnlockBits(bmpData);
             bitmap.Save(filename);
+        }
+        public static Image CombineChannels(Image red, Image green, Image blue)
+        {
+            Image outputImage = new Image(
+            Math.Max(red.Width, Math.Max(green.Width, blue.Width)),
+            Math.Max(red.Height, Math.Max(green.Height, blue.Height)));
+
+            for (int x = 0; x < outputImage.Width; x++)
+            {
+                for (int y = 0; y < outputImage.Height; y++)
+                {
+                    outputImage.PutPixel(x, y,
+                        red.GetPixel(x, y) +
+                        green.GetPixel(x, y) +
+                        blue.GetPixel(x, y));
+                }
+            }
+
+            return outputImage;
+        }
+        public static Image operator +(Image image1, Image image2)
+        {
+            Image outputImage = new Image(
+                Math.Max(image1.Width, image2.Width),
+                Math.Max(image1.Height, image2.Height));
+
+            for(int x = 0; x < outputImage.Width; x++)
+            {
+                for (int y = 0; y < outputImage.Height; y++)
+                {
+                    outputImage.PutPixel(x, y,
+                        image1.GetPixel(x, y) + image2.GetPixel(x, y));
+                }
+            }
+
+            return outputImage;
         }
     }
 }
