@@ -13,62 +13,42 @@ namespace VideoLooper
 {
     internal static class ImageProcessor
     {
-        // TODO : Fix contrast to work for negative values
+        // TODO : Implement contrast
         public static Image Contrast(Image inputImage, double value)
         {
-            double k = 127.5 * (1 - value);
-            Image outputImage = new Image(inputImage.Width, inputImage.Height);
-            for (int x = 0; x < inputImage.Width; x++)
-            {
-                for (int y = 0; y < inputImage.Height; y++)
-                {
-                    Pixel pixel = inputImage.GetPixel(x, y);
-                    outputImage.PutPixel(x, y, new Pixel(
-                        Pixel.ClampValue((int)(pixel.r * ((value * pixel.r + k) / 127.5))),
-                        Pixel.ClampValue((int)(pixel.g * ((value * pixel.g + k) / 127.5))),
-                        Pixel.ClampValue((int)(pixel.b * ((value * pixel.b + k) / 127.5)))));
-                }
-            }
-            return outputImage;
+            throw new NotImplementedException();
         }
         public static Image Monochrome(Image inputImage)
         {
-            Image outputImage = new Image(inputImage.Width, inputImage.Height);
-
-            for (int x = 0; x < inputImage.Width; x++)
-            {
-                for (int y = 0; y < inputImage.Height; y++)
-                {
-                    int sum = inputImage.GetPixel(x, y).ValueSum();
-                    outputImage.PutPixel(x, y,
-                        new Pixel(sum / 3, sum / 3, sum / 3));
-                }
-            }
-
-            return outputImage;
+            return ApplyFunction(inputImage, (pixel) => 
+                new Pixel(pixel.ValueSum() / 3, 
+                          pixel.ValueSum() / 3, 
+                          pixel.ValueSum() / 3));
         }
         // TODO : Implement image saturation
         public static Image Saturation(Image inputImage, double value)
         {
             throw new NotImplementedException();
         }
-        // TODO : Implement image sharpening
-        public static Image Sharpness(Image inputImage, double value)
+        public static Image Sharpness(Image inputImage)
         {
-            throw new NotImplementedException();
+            double[,] sharpnessMatrix = { 
+                { 0, -1, 0 }, 
+                { -1, 5, -1}, 
+                { 0, -1, 0 } };
+            return ApplyConvolutionMatrix(inputImage, sharpnessMatrix, 1);
+        }
+        public static Image EdgeDetection(Image inputImage)
+        {
+            double[,] sharpnessMatrix = {
+                { 0, -1, 0 },
+                { -1, 4, -1},
+                { 0, -1, 0 } };
+            return ApplyConvolutionMatrix(inputImage, sharpnessMatrix, 1);
         }
         public static Image Brightness(Image inputImage, double value)
         {
-            Image outputImage = new Image(inputImage.Width, inputImage.Height);
-            for (int x = 0; x < inputImage.Width; x++)
-            {
-                for (int y = 0; y < inputImage.Height; y++)
-                {
-                    outputImage.PutPixel(x, y,
-                        inputImage.GetPixel(x, y) * value);
-                }
-            }
-            return outputImage;
+            return ApplyFunction(inputImage, (pixel) => pixel * (1 + value));
         }
         public static Image BoxBlur(Image inputImage, int radius)
         {
@@ -133,11 +113,12 @@ namespace VideoLooper
         }
         public static Image GenerateRGBHistogram(Image inputImage, int width = 766, int height = 480, int histogramStep = 1)
         {
-            return Image.CombineChannels(
+            return CombineChannels(
                 GenerateHistogram(inputImage, width, height, histogramStep, (pixel) => pixel.r, new Pixel(255, 0, 0)),
                 GenerateHistogram(inputImage, width, height, histogramStep, (pixel) => pixel.g, new Pixel(0, 255, 0)),
                 GenerateHistogram(inputImage, width, height, histogramStep, (pixel) => pixel.b, new Pixel(0, 0, 255)));
         }
+        
         private static Image GenerateHistogram(Image inputImage, int width, int height, int histogramStep, 
                                                Func<Pixel, int> channelSelector, Pixel colorPixel)
         {
@@ -174,6 +155,61 @@ namespace VideoLooper
 
             return histogramImage;
         }
+        private static Image ApplyFunction(Image inputImage, Func<Pixel, Pixel> func)
+        {
+            Image outputImage = new Image(inputImage.Width, inputImage.Height);
+            for (int x = 0; x < inputImage.Width; x++)
+            {
+                for (int y = 0; y < inputImage.Height; y++)
+                {
+                    outputImage.PutPixel(x, y, 
+                        func(inputImage.GetPixel(x, y)));
+                }
+            }
+            return outputImage;
+        }
+        private static Image ApplyConvolutionMatrix(Image inputImage, double[,] matrix, double divisor)
+        {
+            Image outputImage = new Image(inputImage.Width, inputImage.Height);
+
+            for(int x = 0; x < inputImage.Width; x++)
+            {
+                for(int y = 0; y < inputImage.Height; y++)
+                {
+                    outputImage.PutPixel(x, y,
+                        ApplyMatrixToPixel(inputImage, x, y, matrix, divisor));
+                }
+            }
+
+            return outputImage;
+        }
+        private static Pixel ApplyMatrixToPixel(Image inputImage, int xIndex, int yIndex, double[,] matrix, double divisor = 0)
+        {
+            int width = matrix.GetLength(0);
+            int height = matrix.GetLength(1);
+
+            double[] sum = new double[3];
+
+            for(int x = 0; x < width; x++)
+            {
+                for(int y = 0; y < height; y++)
+                {
+                    Pixel pixel = inputImage.GetPixel(x + xIndex - width / 2,
+                                                      y + yIndex - height / 2);
+                    if(pixel == null) continue;
+                    sum[0] += pixel.r * matrix[x, y];
+                    sum[1] += pixel.g * matrix[x, y];
+                    sum[2] += pixel.b * matrix[x, y];
+                }
+            }
+
+            if(divisor == 0) divisor = height * width;
+
+            return new Pixel(
+                (int)(sum[0] / divisor),
+                (int)(sum[1] / divisor),
+                (int)(sum[2] / divisor));
+        }
         private static int[] RangeSum(Pixel[] pixels, int start, int end)
         {
             int[] output = new int[3];
@@ -192,6 +228,25 @@ namespace VideoLooper
                 sum[0] / count,
                 sum[1] / count,
                 sum[2] / count); 
+        }
+        private static Image CombineChannels(Image red, Image green, Image blue)
+        {
+            Image outputImage = new Image(
+            Math.Max(red.Width, Math.Max(green.Width, blue.Width)),
+            Math.Max(red.Height, Math.Max(green.Height, blue.Height)));
+
+            for (int x = 0; x < outputImage.Width; x++)
+            {
+                for (int y = 0; y < outputImage.Height; y++)
+                {
+                    outputImage.PutPixel(x, y,
+                        red.GetPixel(x, y) +
+                        green.GetPixel(x, y) +
+                        blue.GetPixel(x, y));
+                }
+            }
+
+            return outputImage;
         }
     }
 }

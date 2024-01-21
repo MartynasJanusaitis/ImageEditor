@@ -31,9 +31,9 @@ namespace VideoLooper
         }
         public Pixel(int r, int g, int b)
         {
-            this.r = (byte)r; 
-            this.g = (byte)g; 
-            this.b = (byte)b;
+            this.r = ClampValue(r); 
+            this.g = ClampValue(g); 
+            this.b = ClampValue(b);
             a = 255;
         }
         public Pixel(byte r, byte g, byte b, byte a) : this(r, g, b)
@@ -42,7 +42,7 @@ namespace VideoLooper
         }
         public Pixel(int r, int g, int b, int a) : this(r, g, b)
         {
-            this.a = (byte)a;
+            this.a = ClampValue(a);
         }
         public Pixel(Pixel pixel) : this(pixel.r, pixel.g, pixel.b, pixel.a)
         {

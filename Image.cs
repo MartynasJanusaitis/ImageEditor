@@ -109,25 +109,6 @@ namespace VideoLooper
             bitmap.UnlockBits(bmpData);
             bitmap.Save(filename);
         }
-        public static Image CombineChannels(Image red, Image green, Image blue)
-        {
-            Image outputImage = new Image(
-            Math.Max(red.Width, Math.Max(green.Width, blue.Width)),
-            Math.Max(red.Height, Math.Max(green.Height, blue.Height)));
-
-            for (int x = 0; x < outputImage.Width; x++)
-            {
-                for (int y = 0; y < outputImage.Height; y++)
-                {
-                    outputImage.PutPixel(x, y,
-                        red.GetPixel(x, y) +
-                        green.GetPixel(x, y) +
-                        blue.GetPixel(x, y));
-                }
-            }
-
-            return outputImage;
-        }
         public static Image operator +(Image image1, Image image2)
         {
             Image outputImage = new Image(
