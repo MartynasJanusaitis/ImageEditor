@@ -118,7 +118,16 @@ namespace VideoLooper
                 GenerateHistogram(inputImage, width, height, histogramStep, (pixel) => pixel.g, new Pixel(0, 255, 0)),
                 GenerateHistogram(inputImage, width, height, histogramStep, (pixel) => pixel.b, new Pixel(0, 0, 255)));
         }
-        
+        /// <summary>
+        /// Generates a brightness value histogram for a single color channel
+        /// </summary>
+        /// <param name="inputImage"></param>
+        /// <param name="width">Histogram output image width</param>
+        /// <param name="height">Histogram output image height</param>
+        /// <param name="histogramStep">Number of brightness values to combine into one column</param>
+        /// <param name="channelSelector">Func which selects which channels to use</param>
+        /// <param name="colorPixel">The color of the histogram</param>
+        /// <returns>Histogram image</returns>
         private static Image GenerateHistogram(Image inputImage, int width, int height, int histogramStep, 
                                                Func<Pixel, int> channelSelector, Pixel colorPixel)
         {
@@ -155,6 +164,12 @@ namespace VideoLooper
 
             return histogramImage;
         }
+        /// <summary>
+        /// Applies function to every pixel in the image
+        /// </summary>
+        /// <param name="inputImage"></param>
+        /// <param name="func"></param>
+        /// <returns>Modified image</returns>
         private static Image ApplyFunction(Image inputImage, Func<Pixel, Pixel> func)
         {
             Image outputImage = new Image(inputImage.Width, inputImage.Height);
@@ -183,6 +198,15 @@ namespace VideoLooper
 
             return outputImage;
         }
+        /// <summary>
+        /// Applies matrix to a single pixel
+        /// </summary>
+        /// <param name="inputImage"></param>
+        /// <param name="xIndex"></param>
+        /// <param name="yIndex"></param>
+        /// <param name="matrix"></param>
+        /// <param name="divisor"></param>
+        /// <returns>Modified pixel</returns>
         private static Pixel ApplyMatrixToPixel(Image inputImage, int xIndex, int yIndex, double[,] matrix, double divisor = 0)
         {
             int width = matrix.GetLength(0);
@@ -210,6 +234,13 @@ namespace VideoLooper
                 (int)(sum[1] / divisor),
                 (int)(sum[2] / divisor));
         }
+        /// <summary>
+        /// Returns the sum of rgb channels from a range of pixels
+        /// </summary>
+        /// <param name="pixels"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns>Array of size 3 containing the respective rgb channel sums</returns>
         private static int[] RangeSum(Pixel[] pixels, int start, int end)
         {
             int[] output = new int[3];
@@ -222,6 +253,12 @@ namespace VideoLooper
 
             return output;
         }
+        /// <summary>
+        /// Returns an average value pixel based on given sum array
+        /// </summary>
+        /// <param name="sum">Array containing the sums of the rgb channels</param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         private static Pixel PixelAverage(int[] sum, int count)
         {
             return new Pixel(
@@ -229,6 +266,13 @@ namespace VideoLooper
                 sum[1] / count,
                 sum[2] / count); 
         }
+        /// <summary>
+        /// Combines the respective rgb channels of three images
+        /// </summary>
+        /// <param name="red">Image containing the red channel</param>
+        /// <param name="green">Image containing the green channel</param>
+        /// <param name="blue">Image containing the blue channel</param>
+        /// <returns>Image with combined channels</returns>
         private static Image CombineChannels(Image red, Image green, Image blue)
         {
             Image outputImage = new Image(
