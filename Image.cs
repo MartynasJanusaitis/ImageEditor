@@ -22,11 +22,31 @@ namespace VideoLooper
             Width = pixel.GetLength(0);
             Height = pixel.GetLength(1);
         }
+        public Image(int width, int height, Texture texture)
+        {
+            Width = width;
+            Height = height;
+            pixels = new Pixel[width, height];
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    pixels[x, y] = texture.GetPixel(x, y);
+                }
+            }
+        }
         public Image(int width, int height)
         {
             Width = width;
             Height = height;
             pixels = new Pixel[width, height];
+            for(int x = 0; x < width; x++)
+            {
+                for(int y = 0; y < height; y++)
+                {
+                    pixels[x, y] = new Pixel();
+                }
+            }
         }
         public Image(Bitmap bitmap) : this(new Pixel[bitmap.Width, bitmap.Height])
         {
@@ -91,9 +111,9 @@ namespace VideoLooper
                 {
                     int index = (y * Width + x) * 4;
                     Pixel pixel = pixels[x,y];
-                    bytes[index] = pixel.r;
+                    bytes[index] = pixel.b;
                     bytes[index + 1] = pixel.g;
-                    bytes[index + 2] = pixel.b;
+                    bytes[index + 2] = pixel.r;
                     bytes[index + 3] = pixel.a;
                 }
             }

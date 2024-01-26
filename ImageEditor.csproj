@@ -64,11 +64,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GraphicsGenerator.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="ImageProcessor.cs" />
     <Compile Include="Pixel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Texture.cs" />
+    <Compile Include="TextureGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
