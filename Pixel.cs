@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ImageEditor
 {
-    public class Pixel
+    public class Pixel : IEquatable<Pixel>
     {
         public byte r { get; private set; }
         public byte g { get; private set; }
@@ -48,36 +48,51 @@ namespace ImageEditor
         {
 
         }
-
-        public static Pixel operator +(Pixel x, Pixel y)
+        public bool Equals(Pixel other)
         {
-            return new Pixel(
-                ClampValue(x.r + y.r),
-                ClampValue(x.g + y.g),
-                ClampValue(x.b + y.b));
+            if (other is null) return false;
+            return this.a == other.a &&
+                this.r == other.r &&
+                this.g == other.g &&
+                this.b == other.b;
         }
-        public static Pixel operator -(Pixel x, Pixel y)
+        public static Pixel operator +(Pixel pixelA, Pixel pixelB)
         {
             return new Pixel(
-                ClampValue(x.r - y.r),
-                ClampValue(x.g - y.g),
-                ClampValue(x.b - y.b));
+                ClampValue(pixelA.r + pixelB.r),
+                ClampValue(pixelA.g + pixelB.g),
+                ClampValue(pixelA.b + pixelB.b));
         }
-        public static Pixel operator *(Pixel x, double y)
+        public static Pixel operator -(Pixel pixelA, Pixel pixelB)
         {
             return new Pixel(
-                ClampValue((int)(x.r * y)),
-                ClampValue((int)(x.g * y)),
-                ClampValue((int)(x.b * y)),
-                x.a);
+                ClampValue(pixelA.r - pixelB.r),
+                ClampValue(pixelA.g - pixelB.g),
+                ClampValue(pixelA.b - pixelB.b));
         }
-        public static Pixel operator *(Pixel x, Pixel y)
+        public static Pixel operator *(Pixel pixelA, double pixelB)
         {
             return new Pixel(
-                ClampValue((int)(x.r * y.r)),
-                ClampValue((int)(x.g * y.r)),
-                ClampValue((int)(x.b * y.r)),
-                x.a);
+                ClampValue((int)(pixelA.r * pixelB)),
+                ClampValue((int)(pixelA.g * pixelB)),
+                ClampValue((int)(pixelA.b * pixelB)),
+                pixelA.a);
+        }
+        public static Pixel operator *(Pixel pixelA, Pixel pixelB)
+        {
+            return new Pixel(
+                ClampValue((int)(pixelA.r * pixelB.r)),
+                ClampValue((int)(pixelA.g * pixelB.r)),
+                ClampValue((int)(pixelA.b * pixelB.r)),
+                pixelA.a);
+        }
+        public static bool operator ==(Pixel pixelA, Pixel pixelB)
+        {
+            return pixelA.Equals(pixelB);
+        }
+        public static bool operator !=(Pixel pixelA, Pixel pixelB)
+        {
+            return !pixelA.Equals(pixelB);
         }
         public static byte ClampValue(int value, int min = 0, int max = 255)
         {
@@ -151,6 +166,8 @@ namespace ImageEditor
                 sum[1] / count,
                 sum[2] / count);
         }
+
+
 
     }
 }

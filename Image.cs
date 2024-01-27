@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ImageEditor
 {
-    public class Image
+    public class Image : IEquatable<Image>
     {
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -128,6 +128,29 @@ namespace ImageEditor
             bitmap.UnlockBits(bmpData);
             bitmap.Save(filename);
         }
+        public bool Equals(Image other)
+        {
+            if(other is null) return false;
+            for(int x = 0; x < Width; x++)
+            {
+                for(int y = 0; y < Height ; y++)
+                {
+                    if (pixels[x, y] != other.pixels[x, y])
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        public static bool operator==(Image image1, Image image2)
+        {
+            return image1.Equals(image2);
+        }
+        public static bool operator !=(Image image1, Image image2)
+        {
+            return !image1.Equals(image2);
+        }
         public static Image operator +(Image image1, Image image2)
         {
             Image outputImage = new Image(
@@ -212,6 +235,5 @@ namespace ImageEditor
 
             return outputImage;
         }
-
     }
 }
