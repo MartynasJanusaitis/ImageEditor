@@ -63,9 +63,9 @@ namespace ImageEditor
                 for (int y = 0; y < bitmap.Height; y++)
                 {
                     int index = (y * bitmap.Width + x) * 4;
-                    byte r = bytes[index];
+                    byte b = bytes[index];
                     byte g = bytes[index + 1];
-                    byte b = bytes[index + 2];
+                    byte r = bytes[index + 2];
                     byte a = bytes[index + 3];
                     pixels[x, y] = new Pixel(r, g, b, a);
                 }
