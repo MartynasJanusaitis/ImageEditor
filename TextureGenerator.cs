@@ -16,7 +16,10 @@ namespace ImageEditor
         {
             return new Texture((x, y) => (x / size % 2 == 0 ^ y / size % 2 == 0) ? colorB : colorA);
         }
-
+        public static Texture ImageTexture(Image image)
+        {
+            return new Texture((x, y) => image.GetPixel(x % image.Width, y % image.Height));
+        }
         public static Texture RandomNoise(int minVal = 0, int maxVal = 255)
         {
             Random random = new Random();
