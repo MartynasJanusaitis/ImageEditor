@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{5244FDBD-D35C-43A7-8684-AAEAE637FC2D}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>VideoLooper</RootNamespace>
-    <AssemblyName>VideoLooper</AssemblyName>
+    <RootNamespace>ImageEditor</RootNamespace>
+    <AssemblyName>ImageEditor</AssemblyName>
     <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -67,6 +67,7 @@
     <Compile Include="GraphicsGenerator.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="ImageProcessor.cs" />
+    <Compile Include="MathUtils.cs" />
     <Compile Include="Pixel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

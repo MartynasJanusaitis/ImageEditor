@@ -7,7 +7,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ImageEditor
 {
@@ -146,5 +145,73 @@ namespace ImageEditor
 
             return outputImage;
         }
+        /// <summary>
+        /// Combines the respective rgb channels of three images
+        /// </summary>
+        /// <param name="red">Image containing the red channel</param>
+        /// <param name="green">Image containing the green channel</param>
+        /// <param name="blue">Image containing the blue channel</param>
+        /// <returns>Image with combined channels</returns>
+        public static Image CombineChannels(Image red, Image green, Image blue)
+        {
+            Image outputImage = new Image(
+            Math.Max(red.Width, Math.Max(green.Width, blue.Width)),
+            Math.Max(red.Height, Math.Max(green.Height, blue.Height)));
+
+            for (int x = 0; x < outputImage.Width; x++)
+            {
+                for (int y = 0; y < outputImage.Height; y++)
+                {
+                    outputImage.PutPixel(x, y,
+                        red.GetPixel(x, y) +
+                        green.GetPixel(x, y) +
+                        blue.GetPixel(x, y));
+                }
+            }
+
+            return outputImage;
+        }
+        /// <summary>
+        /// Applies function to every pixel in the image
+        /// </summary>
+        /// <param name="inputImage"></param>
+        /// <param name="func"></param>
+        /// <returns>Modified image</returns>
+        public static Image ApplyFunction(Image inputImage, Func<Pixel, Pixel> func)
+        {
+            Image outputImage = new Image(inputImage.Width, inputImage.Height);
+            for (int x = 0; x < inputImage.Width; x++)
+            {
+                for (int y = 0; y < inputImage.Height; y++)
+                {
+                    outputImage.PutPixel(x, y,
+                        func(inputImage.GetPixel(x, y)));
+                }
+            }
+            return outputImage;
+        }
+        /// <summary>
+        /// Applies a matrix transformation to every pixel in image
+        /// </summary>
+        /// <param name="inputImage"></param>
+        /// <param name="matrix"></param>
+        /// <param name="divisor">Divisor to divide the matrix sum</param>
+        /// <returns></returns>
+        public static Image ApplyConvolutionMatrix(Image inputImage, double[,] matrix, double divisor)
+        {
+            Image outputImage = new Image(inputImage.Width, inputImage.Height);
+
+            for (int x = 0; x < inputImage.Width; x++)
+            {
+                for (int y = 0; y < inputImage.Height; y++)
+                {
+                    outputImage.PutPixel(x, y,
+                        Pixel.ApplyMatrixToPixel(inputImage, x, y, matrix, divisor));
+                }
+            }
+
+            return outputImage;
+        }
+
     }
 }

@@ -100,5 +100,56 @@ namespace ImageEditor
             arr[1] -= pixel.g;
             arr[2] -= pixel.b;
         }
+
+        /// <summary>
+        /// Applies matrix to a single pixel
+        /// </summary>
+        /// <param name="inputImage"></param>
+        /// <param name="xIndex"></param>
+        /// <param name="yIndex"></param>
+        /// <param name="matrix"></param>
+        /// <param name="divisor"></param>
+        /// <returns>Modified pixel</returns>
+        public static Pixel ApplyMatrixToPixel(Image inputImage, int xIndex, int yIndex, double[,] matrix, double divisor = 0)
+        {
+            int width = matrix.GetLength(0);
+            int height = matrix.GetLength(1);
+
+            double[] sum = new double[3];
+
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    Pixel pixel = inputImage.GetPixel(x + xIndex - width / 2,
+                                                      y + yIndex - height / 2);
+                    if (pixel == null) continue;
+                    sum[0] += pixel.r * matrix[x, y];
+                    sum[1] += pixel.g * matrix[x, y];
+                    sum[2] += pixel.b * matrix[x, y];
+                }
+            }
+
+            if (divisor == 0) divisor = height * width;
+
+            return new Pixel(
+                (int)(sum[0] / divisor),
+                (int)(sum[1] / divisor),
+                (int)(sum[2] / divisor));
+        }
+        /// <summary>
+        /// Returns an average value pixel based on given sum array
+        /// </summary>
+        /// <param name="sum">Array containing the sums of the rgb channels</param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static Pixel PixelAverage(int[] sum, int count)
+        {
+            return new Pixel(
+                sum[0] / count,
+                sum[1] / count,
+                sum[2] / count);
+        }
+
     }
 }
