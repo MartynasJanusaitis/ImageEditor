@@ -6,20 +6,20 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VideoLooper
+namespace ImageEditor
 {
     internal class Pixel
     {
-        public byte r { get; private set; } 
+        public byte r { get; private set; }
         public byte g { get; private set; }
         public byte b { get; private set; }
         public byte a { get; private set; }
 
         public Pixel()
         {
-            r = 0; 
-            g = 0; 
-            b = 0; 
+            r = 0;
+            g = 0;
+            b = 0;
             a = 255;
         }
         public Pixel(byte r, byte g, byte b)
@@ -31,8 +31,8 @@ namespace VideoLooper
         }
         public Pixel(int r, int g, int b)
         {
-            this.r = ClampValue(r); 
-            this.g = ClampValue(g); 
+            this.r = ClampValue(r);
+            this.g = ClampValue(g);
             this.b = ClampValue(b);
             a = 255;
         }
@@ -62,7 +62,7 @@ namespace VideoLooper
                 ClampValue(x.g - y.g),
                 ClampValue(x.b - y.b));
         }
-        public static Pixel operator *(Pixel x, double y) 
+        public static Pixel operator *(Pixel x, double y)
         {
             return new Pixel(
                 ClampValue((int)(x.r * y)),
@@ -80,7 +80,7 @@ namespace VideoLooper
         }
         public static byte ClampValue(int value, int min = 0, int max = 255)
         {
-            if(value < min) value = 0;
+            if (value < min) value = 0;
             else if (value > max) value = 255;
             return (byte)value;
         }
