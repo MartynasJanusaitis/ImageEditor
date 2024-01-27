@@ -2,6 +2,7 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Configuration;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,6 +49,33 @@ namespace ImageEditor
         {
 
         }
+        public Pixel(PixelHSV pixel)
+        {
+            a = ClampValue(pixel.a);
+
+            double H = pixel.h;
+            double V = pixel.v / 100.0;
+            double S = pixel.s / 100.0;
+
+            double C = (1 - Math.Abs(2 * V - 1)) * S;
+
+            double X = C * (1 - Math.Abs((pixel.h / 60.0) % 2 - 1));
+
+            double m = V - C / 2;
+
+            (double R, double G, double B) inversePixel;
+
+            if (H <= 60) inversePixel = (C, X, 0);
+            else if (H <= 120) inversePixel = (X, C, 0);
+            else if (H <= 180) inversePixel = (0, C, X);
+            else if (H <= 240) inversePixel = (0, X, C);
+            else if (H <= 300) inversePixel = (X, 0, C);
+            else inversePixel = (C, 0, X);
+
+            r = (byte)Math.Round((inversePixel.R + m) * 255);
+            g = (byte)Math.Round((inversePixel.G + m) * 255);
+            b = (byte)Math.Round((inversePixel.B + m) * 255);
+        }
         public bool Equals(Pixel other)
         {
             if (other is null) return false;
@@ -55,6 +83,10 @@ namespace ImageEditor
                 this.r == other.r &&
                 this.g == other.g &&
                 this.b == other.b;
+        }
+        public override string ToString()
+        {
+            return $"R: {r}, G: {g}, B: {b}, A: {a}";
         }
         public static Pixel operator +(Pixel pixelA, Pixel pixelB)
         {
