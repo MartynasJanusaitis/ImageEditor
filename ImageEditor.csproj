@@ -69,6 +69,7 @@
     <Compile Include="ImageProcessor.cs" />
     <Compile Include="MathUtils.cs" />
     <Compile Include="Pixel.cs" />
+    <Compile Include="PixelHSV.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Texture.cs" />

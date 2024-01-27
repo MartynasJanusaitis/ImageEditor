@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ImageEditor
 {
-    internal class Pixel
+    public class Pixel
     {
         public byte r { get; private set; }
         public byte g { get; private set; }
@@ -48,6 +48,7 @@ namespace ImageEditor
         {
 
         }
+
         public static Pixel operator +(Pixel x, Pixel y)
         {
             return new Pixel(

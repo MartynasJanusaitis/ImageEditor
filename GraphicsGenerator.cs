@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ImageEditor
 {
-    internal static class GraphicsGenerator
+    public static class GraphicsGenerator
     {
         public static Image Rectangle(Image image, int x, int y, int width, int height, Texture texture)
         {

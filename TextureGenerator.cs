@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ImageEditor
 {
-    internal static class TextureGenerator
+    public static class TextureGenerator
     {
         public static Texture SolidColor(int r, int g, int b)
         {

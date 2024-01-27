@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ImageEditor
 {
-    internal static class ImageProcessor
+    public static class ImageProcessor
     {
         // TODO : Implement contrast
         public static Image Contrast(Image inputImage, double value)

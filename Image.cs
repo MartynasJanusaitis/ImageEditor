@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ImageEditor
 {
-    internal class Image
+    public class Image
     {
         public int Width { get; private set; }
         public int Height { get; private set; }

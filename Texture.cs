@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ImageEditor
 {
-    internal class Texture
+    public class Texture
     {
         private Func<int, int, Pixel> Generator;
         public Texture(Func<int, int, Pixel> generator)

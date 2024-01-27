@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ImageEditor
 {
-    internal static class MathUtils
+    public static class MathUtils
     {
         public static double Distance(double x1, double y1, double x2, double y2)
         {
