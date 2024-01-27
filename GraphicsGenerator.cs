@@ -20,5 +20,21 @@ namespace ImageEditor
 
             return image;
         }
+
+        public static Image Circle(Image image, int x, int y, int radius, Texture texture)
+        {
+            for(int xi = x - radius; xi < x + radius; xi++)
+            {
+                for(int yi = y - radius; yi < y + radius; yi++)
+                {
+                    if(MathUtils.Distance(x, y, xi, yi) <= radius)
+                    {
+                        image.PutPixel(xi, yi, texture.GetPixel(xi, yi));
+                    }
+                }
+            }
+
+            return image;
+        }
     }
 }
