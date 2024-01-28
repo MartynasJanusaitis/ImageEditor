@@ -25,10 +25,14 @@ namespace ImageEditor
                           pixel.ValueSum() / 3, 
                           pixel.ValueSum() / 3));
         }
-        // TODO : Implement image saturation
         public static Image Saturation(Image inputImage, double value)
         {
-            throw new NotImplementedException();
+            return Image.ApplyFunction(inputImage, (pixel) =>
+            {
+                PixelHSV newPixel = new PixelHSV(pixel);
+                newPixel.s = (int)Math.Round(newPixel.s * value);
+                return new Pixel(newPixel);
+            });
         }
         public static Image Sharpness(Image inputImage)
         {
